@@ -1,10 +1,24 @@
-import json
+import os
+import requests
 
 
-def load_data(file_path):
-    """Loads a JSON file"""
-    with open(file_path, "r", encoding="utf-8") as handle:
-        return json.load(handle)
+def fetch_animals_data(animal_name):
+    """Fetch animals JSON from API Ninjas Animals API."""
+    api_key = os.getenv("API_NINJAS_KEY")
+    if not api_key:
+        raise SystemExit("Missing API_NINJAS_KEY env var")
+
+    response = requests.get(
+        "https://api.api-ninjas.com/v1/animals",
+        headers={"X-Api-Key": api_key},
+        params={"name": animal_name},
+        timeout=15,
+    )
+
+    if response.status_code != 200:
+        raise RuntimeError(f"API error {response.status_code}: {response.text}")
+
+    return response.json()  # list
 
 
 def load_template(file_path):
@@ -43,13 +57,25 @@ def serialize_animal(animal):
 
 
 def main():
-    animals_data = load_data("animals_data.json")
+    animal_name = input("Enter an animal name: ").strip()
+    animals_data = fetch_animals_data(animal_name)
+
     template = load_template("animals_template.html")
 
-    output = ""
+    cards = []
     for animal in animals_data:
-        output += serialize_animal(animal)
+        cards.append(serialize_animal(animal))
 
+    # If no results, render a single "no animals" card (keeps the HTML structure valid)
+    if not cards:
+        cards.append(
+            '<li class="cards__item">\n'
+            '  <div class="card__title">No animals found.</div>\n'
+            '  <p class="card__text">Try a different search.</p>\n'
+            '</li>\n'
+        )
+
+    output = "".join(cards)
     new_html = template.replace("__REPLACE_ANIMALS_INFO__", output)
 
     with open("animals.html", "w", encoding="utf-8") as handle:
