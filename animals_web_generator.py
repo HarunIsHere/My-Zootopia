@@ -1,5 +1,6 @@
 import data_fetcher
 
+
 def load_template(file_path):
     """Loads an HTML template file"""
     with open(file_path, "r", encoding="utf-8") as handle:
