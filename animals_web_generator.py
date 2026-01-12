@@ -14,27 +14,31 @@ def load_template(file_path):
 
 
 def serialize_animal(animal):
-    """Returns an HTML <li> block for one animal (only existing fields)."""
-    parts = ['<li class="cards__item">']
-
+    """Returns an HTML <li> card for one animal (only existing fields)."""
     name = animal.get("name")
-    if name:
-        parts.append(f"Name: {name}<br/>\n")
-
     characteristics = animal.get("characteristics", {}) or {}
     diet = characteristics.get("diet")
-    if diet:
-        parts.append(f"Diet: {diet}<br/>\n")
-
-    locations = animal.get("locations", []) or []
-    if locations:
-        parts.append(f"Location: {locations[0]}<br/>\n")
-
     animal_type = characteristics.get("type")
-    if animal_type:
-        parts.append(f"Type: {animal_type}<br/>\n")
+    locations = animal.get("locations", []) or []
+    first_location = locations[0] if locations else None
 
-    parts.append("</li>\n")
+    parts = ['<li class="cards__item">\n']
+
+    if name:
+        parts.append(f'  <div class="card__title">{name}</div>\n')
+
+    parts.append('  <p class="card__text">\n')
+
+    if diet:
+        parts.append(f'      <strong>Diet:</strong> {diet}<br/>\n')
+    if first_location:
+        parts.append(f'      <strong>Location:</strong> {first_location}<br/>\n')
+    if animal_type:
+        parts.append(f'      <strong>Type:</strong> {animal_type}<br/>\n')
+
+    parts.append('  </p>\n')
+    parts.append('</li>\n')
+
     return "".join(parts)
 
 
