@@ -66,11 +66,11 @@ def main():
     for animal in animals_data:
         cards.append(serialize_animal(animal))
 
-    # If no results, render a single "no animals" card (keeps the HTML structure valid)
+    # If no results, render a single "no animals" card
     if not cards:
         cards.append(
             '<li class="cards__item">\n'
-            '  <div class="card__title">No animals found.</div>\n'
+            f'  <div class="card__title">The animal "{animal_name}" doesn\'t exist.</div>\n'
             '  <p class="card__text">Try a different search.</p>\n'
             '</li>\n'
         )
