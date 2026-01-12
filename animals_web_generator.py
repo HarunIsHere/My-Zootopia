@@ -1,25 +1,4 @@
-import os
-import requests
-
-
-def fetch_animals_data(animal_name):
-    """Fetch animals JSON from API Ninjas Animals API."""
-    api_key = os.getenv("API_NINJAS_KEY")
-    if not api_key:
-        raise SystemExit("Missing API_NINJAS_KEY env var")
-
-    response = requests.get(
-        "https://api.api-ninjas.com/v1/animals",
-        headers={"X-Api-Key": api_key},
-        params={"name": animal_name},
-        timeout=15,
-    )
-
-    if response.status_code != 200:
-        raise RuntimeError(f"API error {response.status_code}: {response.text}")
-
-    return response.json()  # list
-
+import data_fetcher
 
 def load_template(file_path):
     """Loads an HTML template file"""
@@ -58,7 +37,7 @@ def serialize_animal(animal):
 
 def main():
     animal_name = input("Enter an animal name: ").strip()
-    animals_data = fetch_animals_data(animal_name)
+    animals_data = data_fetcher.fetch_data(animal_name)
 
     template = load_template("animals_template.html")
 
