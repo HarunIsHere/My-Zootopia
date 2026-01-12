@@ -14,27 +14,28 @@ def load_template(file_path):
 
 
 def serialize_animal(animal):
-    """Returns a text block for one animal (only existing fields)."""
-    lines = []
+    """Returns an HTML <li> block for one animal (only existing fields)."""
+    parts = ['<li class="cards__item">']
 
     name = animal.get("name")
     if name:
-        lines.append(f"Name: {name}")
+        parts.append(f"Name: {name}<br/>\n")
 
     characteristics = animal.get("characteristics", {}) or {}
     diet = characteristics.get("diet")
     if diet:
-        lines.append(f"Diet: {diet}")
+        parts.append(f"Diet: {diet}<br/>\n")
 
     locations = animal.get("locations", []) or []
     if locations:
-        lines.append(f"Location: {locations[0]}")
+        parts.append(f"Location: {locations[0]}<br/>\n")
 
     animal_type = characteristics.get("type")
     if animal_type:
-        lines.append(f"Type: {animal_type}")
+        parts.append(f"Type: {animal_type}<br/>\n")
 
-    return "\n".join(lines)
+    parts.append("</li>\n")
+    return "".join(parts)
 
 
 def main():
@@ -43,9 +44,7 @@ def main():
 
     output = ""
     for animal in animals_data:
-        block = serialize_animal(animal)
-        if block:
-            output += block + "\n\n"  # blank line between animals
+        output += serialize_animal(animal)
 
     new_html = template.replace("__REPLACE_ANIMALS_INFO__", output)
 
